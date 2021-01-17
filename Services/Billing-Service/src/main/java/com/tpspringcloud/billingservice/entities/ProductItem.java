@@ -10,7 +10,7 @@ import lombok.ToString;
 import javax.persistence.*;
 
 @Entity
-@Data @NoArgsConstructor @AllArgsConstructor @ToString
+@Data @NoArgsConstructor @AllArgsConstructor @ToString(exclude = "bill")
 public class ProductItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
