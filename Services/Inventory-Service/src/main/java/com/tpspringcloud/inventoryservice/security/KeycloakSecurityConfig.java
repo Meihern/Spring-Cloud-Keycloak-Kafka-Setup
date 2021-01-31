@@ -9,6 +9,7 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 
+
 @KeycloakConfiguration
 public class KeycloakSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
     @Override
@@ -24,8 +25,11 @@ public class KeycloakSecurityConfig extends KeycloakWebSecurityConfigurerAdapter
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
-        http.authorizeRequests().antMatchers(HttpMethod.GET, "/products/**").hasAuthority("USER");
+        http.authorizeRequests().antMatchers(HttpMethod.GET,"/products/**").hasAuthority("USER");
+       // http.cors();
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/products/**").hasAnyAuthority("ADMIN","PRODUCT_MANAGER");
+        http.authorizeRequests().antMatchers(HttpMethod.DELETE, "/products/**").hasAnyAuthority("ADMIN","PRODUCT_MANAGER");
+
 
     }
 }
