@@ -5,11 +5,13 @@ import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurer
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 
 @KeycloakConfiguration
+@EnableWebSecurity
 public class KeycloakSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
     @Override
@@ -18,14 +20,19 @@ public class KeycloakSecurityConfig extends KeycloakWebSecurityConfigurerAdapter
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        super.configure(http);
-        http.authorizeRequests().antMatchers(HttpMethod.GET, "/customers/**").hasAuthority("USER");
-        http.authorizeRequests().antMatchers(HttpMethod.POST, "/customers/**").hasAnyAuthority("ADMIN","CUSTOMER_MANAGER");
-    }
-
-    @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(keycloakAuthenticationProvider());
     }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        super.configure(http);
+        http.csrf().disable();
+        http.authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/customers/**").authenticated()
+                .antMatchers("/customers/**").hasAnyAuthority("ADMIN","CUSTOMER_MANAGER")
+                .anyRequest().permitAll();
+    }
+
+
 }
