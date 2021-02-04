@@ -1,7 +1,9 @@
 package com.tpspringcloud.kafkaconsumerservice;
 
+import com.opencsv.CSVWriter;
 import com.tpspringcloud.kafkaconsumerservice.deserializers.KafkaFactureDeserializer;
 import com.tpspringcloud.kafkaconsumerservice.entities.Facture;
+import com.tpspringcloud.kafkaconsumerservice.repositories.FactureRepository;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -12,6 +14,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.EnableKafka;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
@@ -33,7 +37,7 @@ public class KafkaConsumerServiceApplication {
     }
 
     @Bean
-    CommandLineRunner startConsumer(){
+    CommandLineRunner startConsumer(FactureRepository factureRepository){
         return args -> {
             Properties properties = new Properties();
             properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKER_URL);
@@ -51,11 +55,20 @@ public class KafkaConsumerServiceApplication {
             Executors.newScheduledThreadPool(1).scheduleAtFixedRate(()->{
                 System.out.println("------------------------------------");
                 ConsumerRecords<Integer, Facture> consumerRecords=kafkaConsumer.poll(Duration.ofMillis(10));
-                consumerRecords.forEach(consumerRecord->{
-                    System.out.println("Key=>"+consumerRecord.key()+", Facture=>"+consumerRecord.value().toString()+", offsets=>"+consumerRecord.offset());
-                });
+                try {
+                    CSVWriter csvWriter = new CSVWriter(new FileWriter("src/factures.csv", true));
+                    consumerRecords.forEach(consumerRecord->{
+                        System.out.println("Key=>"+consumerRecord.key()+", Facture=>"+consumerRecord.value()+", offsets=>"+consumerRecord.offset());
+                        Facture facture = factureRepository.save(consumerRecord.value());
+                        csvWriter.writeNext(new String[]{String.valueOf(facture.getId()), facture.getNomClient(), String.valueOf(facture.getTotal())}, false);
+                    });
+                    csvWriter.flush();
+                    csvWriter.close();
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
             },1,1, TimeUnit.SECONDS);
-
         };
     }
 
