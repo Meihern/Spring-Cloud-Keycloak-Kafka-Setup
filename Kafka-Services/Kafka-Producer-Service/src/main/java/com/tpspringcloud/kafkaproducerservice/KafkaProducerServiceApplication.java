@@ -10,6 +10,7 @@ import org.apache.kafka.common.serialization.IntegerSerializer;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 
 import java.util.Properties;
@@ -38,8 +39,7 @@ public class KafkaProducerServiceApplication {
             properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaFactureSerializer.class.getName());
 
             KafkaProducer<Integer, Facture> kafkaProducer = new KafkaProducer<>(properties);
-            Generex generex = new Generex("([A-Z]{1}[a-z]{4,8} ){2}");
-
+            Generex generex = new Generex("Youssef ACHIR|Ouiam KHATTACH|Yasser CHIHAB|Oussama AIT ALLA|Hajar LABLAOUI");
 
             Executors.newScheduledThreadPool(1).scheduleAtFixedRate(()->{
                 ++counter;
