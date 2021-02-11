@@ -27,14 +27,13 @@ public class BillingServiceApplication {
         SpringApplication.run(BillingServiceApplication.class, args);
     }
 
-    @Bean
+    /* @Bean
     CommandLineRunner start(BillRepository billRepository,
                             ProductItemRepository productItemRepository,
                             CustomerFeignClient customerFeignClient,
-                            ProductFeignClient productFeignClient,
-                            KeycloakSecurityContext keycloakSecurityContext){
+                            ProductFeignClient productFeignClient){
         return args -> {
-            String bearer = "Bearer "+"eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJsaF9hWWk3QW1wUldJRUNkR3lPN0ZGV0VJekJiNWFMaUdDWkU0S0swOEM4In0.eyJleHAiOjE2MTA4OTYzMjgsImlhdCI6MTYxMDg5NTcyOCwianRpIjoiMzFjYTY4MzUtMzYxZS00ZTUxLTg4MGItNWZlZTY0MTlmYTBmIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2F1dGgvcmVhbG1zL2Vjb20tbWljcm8tc2VydmljZXMiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiNGI4YTkyZmMtOTk2Zi00NTAxLTlkMmQtYjNhMTBlMDAwODc2IiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiYmlsbGluZy1zZXJ2aWNlIiwic2Vzc2lvbl9zdGF0ZSI6Ijk1OGQwNWI4LWJiOTEtNGM4NC05Njc5LTYwZWZlMDZlZjIwMCIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL2xvY2FsaG9zdDo4MDgzIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJCSUxMSU5HX01BTkFHRVIiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiVVNFUiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwibmFtZSI6IkJpbGxpbmcgVXNlciIsInByZWZlcnJlZF91c2VybmFtZSI6ImJpbGxpbmdfdXNlciIsImdpdmVuX25hbWUiOiJCaWxsaW5nIiwiZmFtaWx5X25hbWUiOiJVc2VyIiwiZW1haWwiOiJiaWxsaW5nX3VzZXJAZ21haWwuY29tIn0.QEQuI2it1_CEKRkXY4ylL53v1e8bih6Kor3phkFhgpw92Smvc9Ge2fINV5vUj3vkqVxFMS1eVPsPbnBrPJR17LjfPf4ahBGHKmb0jOBBN2Ci9Dm-T1PG7u7vA9VRfLFh6piJX8faMhCk4Iw89ZyRvm0qu5Xf1tQjwScts-MOYq_Fuhnkwa9NcQxWCoQ2yOTg3dz5mcW1SNIEZlBqvoPxchS-jbsoXuUi9nuXqLvm3WROXvXBcKSpIhgmASpskm8fWOagCI79WYRI1S_cpo-1l35Uq7QpcC12bw4_5fXcGzcDkl2ZIT_O-QaLMTRYE4nyZkTcFyVLq8KWqCOUiLRgyw";
+            String bearer = "Bearer " + "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJsaF9hWWk3QW1wUldJRUNkR3lPN0ZGV0VJekJiNWFMaUdDWkU0S0swOEM4In0.eyJleHAiOjE2MTMwNTk4MDYsImlhdCI6MTYxMzA1OTIwNiwianRpIjoiMDg0ODlhMzMtOTk3Zi00ZDcwLThhOTktZWNjMTZiYTRkOTg2IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2F1dGgvcmVhbG1zL2Vjb20tbWljcm8tc2VydmljZXMiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiOGEzNjFlZmMtNGZiNi00YTQ1LWJiODMtZmFhZGNiMzNiM2RiIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiaW52ZW50b3J5LXNlcnZpY2UiLCJzZXNzaW9uX3N0YXRlIjoiMWFkY2ZhN2MtYzllOC00MzU4LTgwNjUtNjA2OGYwODQ4MDdhIiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwOi8vbG9jYWxob3N0OjgwODIiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwiQURNSU4iLCJ1bWFfYXV0aG9yaXphdGlvbiIsIlVTRVIiXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6InByb2ZpbGUgZW1haWwiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsIm5hbWUiOiJBZG1pbiBVc2VyIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW5fdXNlciIsImdpdmVuX25hbWUiOiJBZG1pbiIsImZhbWlseV9uYW1lIjoiVXNlciIsImVtYWlsIjoiYWRtaW5fdXNlckBnbWFpbC5jb20ifQ.R9ldOXhkuxJO6DaqSOxHqI7KFiXZvJmuJWvwxzoFdVAZqoBcnyvLZTnyFoscIClQzMvBgPPNwv-y2ZjeePxJqj6p9JzGc44_G705iM4aJqJbnLuYOYS5gjDv0fHJ9TlPQGjKT2rHFpfxNvs2zigUNkidodchc7CxjDa8fBtZeq332ZGT3XFp08NaJyu4hQyeOVLBTpuZ5WK9oTkX_bkXGWcT0lgu6sZhzyA2M3CT6K5WStPrMexie3QOseP16WJ9fwZRtHbliedyWe-RrI87R2fhtOjfvf-PrbPgNe47nY0wPE1UpKk6rgfX_P__iNsU4Uqw_lmAmxdrQkHjc1RJmg";
             Customer customer = customerFeignClient.getCustomerById(1L, bearer);
             Bill bill = billRepository.save(new Bill(null, new Date(), null, customer, customer.getId()));
             PagedModel<Product> pageProducts = productFeignClient.pageProducts(bearer);
@@ -53,6 +52,6 @@ public class BillingServiceApplication {
             System.out.println(customer.toString());
             System.out.println(bill.toString());
         };
-    }
+    } */
 
 }

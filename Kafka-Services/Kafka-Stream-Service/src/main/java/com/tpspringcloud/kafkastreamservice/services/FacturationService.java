@@ -3,10 +3,8 @@ package com.tpspringcloud.kafkastreamservice.services;
 import com.tpspringcloud.kafkastreamservice.models.Facture;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KeyValue;
-import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.Grouped;
 import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.Produced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
